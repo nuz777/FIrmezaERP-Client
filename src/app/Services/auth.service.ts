@@ -26,6 +26,7 @@ export interface RequestPasswordResetCodeResponse {
   email: string;
   message: string;
   expiresInMinutes: number;
+  devCode?: string | null;
 }
 
 export interface ChangePasswordWithCodeRequest {

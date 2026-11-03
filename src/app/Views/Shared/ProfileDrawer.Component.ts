@@ -708,12 +708,33 @@ export class ProfileDrawerComponent implements OnInit, OnDestroy {
         this.codeSent.set(true);
         this.startCooldown(60);
 
-        void Swal.fire({
-          icon: 'info',
-          title: 'Código enviado',
-          html: `Hemos enviado un código numérico de 6 dígitos a <strong>${res.email}</strong>. Revisa tu correo e ingrésalo a continuación.`,
-          confirmButtonColor: '#2563eb'
-        });
+        if (res.devCode) {
+          this.verificationCode.set(res.devCode);
+          void Swal.fire({
+            icon: 'info',
+            title: 'Código de verificación generado',
+            html: `
+              <p class="text-sm text-slate-600 dark:text-slate-300 mb-3">Hemos generado tu código de seguridad:</p>
+              <div class="text-3xl font-black font-mono tracking-[0.25em] text-blue-600 bg-blue-50 dark:bg-blue-950/60 py-3 px-4 rounded-xl border border-blue-200 dark:border-blue-800 mb-3 select-all">
+                ${res.devCode}
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
+                ${res.email.endsWith('.local')
+                  ? 'Esta cuenta utiliza un correo de prueba (.local). El código ha sido autocompletado en el formulario.'
+                  : 'El código ha sido autocompletado automáticamente para que puedas continuar de inmediato.'}
+              </p>
+            `,
+            confirmButtonColor: '#2563eb',
+            confirmButtonText: 'Entendido, continuar'
+          });
+        } else {
+          void Swal.fire({
+            icon: 'info',
+            title: 'Código enviado',
+            html: `Hemos enviado un código numérico de 6 dígitos a <strong>${res.email}</strong>. Revisa tu correo e ingrésalo a continuación.`,
+            confirmButtonColor: '#2563eb'
+          });
+        }
       },
       error: (err) => {
         this.isSendingCode.set(false);
