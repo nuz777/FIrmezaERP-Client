@@ -113,7 +113,7 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
 
       <div class="relative z-10 mx-auto grid max-w-7xl gap-8 px-5 pb-16 pt-10 lg:grid-cols-12 lg:items-center lg:gap-12 lg:px-8">
         <!-- Columna de contenido textual -->
-        <div class="lg:col-span-7">
+        <div class="lg:col-span-6">
           <div class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50/90 px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-blue-700 shadow-2xs">
             <span class="relative flex h-2 w-2">
               <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
@@ -180,11 +180,11 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
         </div>
 
         <!-- Columna de ilustración y tarjetas flotantes de producto -->
-        <div class="relative lg:col-span-5 flex justify-center">
+        <div class="relative lg:col-span-6 flex justify-center pt-6 lg:pt-14">
           <!-- Resplandor decorativo de fondo -->
-          <div class="pointer-events-none absolute -inset-4 rounded-full bg-gradient-to-tr from-blue-300/30 to-indigo-200/30 blur-2xl"></div>
+          <div class="pointer-events-none absolute -inset-6 rounded-full bg-gradient-to-tr from-blue-300/35 to-indigo-200/35 blur-3xl"></div>
 
-          <div class="relative z-10 w-full max-w-[480px]">
+          <div class="relative z-10 w-full max-w-[620px] lg:translate-y-8">
             <img
               src="img/Godman.png"
               alt="Operación Ferretería Firmeza"
