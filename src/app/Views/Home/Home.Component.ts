@@ -191,21 +191,6 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
               class="animate-slide-in-left block h-auto w-full object-contain drop-shadow-2xl transition duration-500 hover:scale-102"
             />
 
-            <!-- Tarjeta flotante 1: Catálogo y materiales -->
-            <div class="absolute -bottom-4 left-0 sm:-left-6 rounded-2xl border border-slate-200/90 bg-white/95 p-3.5 shadow-xl shadow-slate-300/50 backdrop-blur-md">
-              <div class="flex items-center gap-3">
-                <div class="grid h-10 w-10 place-items-center rounded-xl bg-blue-50 text-blue-600">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5">
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                  </svg>
-                </div>
-                <div>
-                  <p class="text-xs font-black text-slate-900">Inventario al instante</p>
-                  <p class="text-[11px] font-semibold text-slate-500">+1.240 productos codificados</p>
-                </div>
-              </div>
-            </div>
-
             <!-- Tarjeta flotante 2: Estado de pedidos -->
             <div class="absolute top-8 -right-2 sm:-right-4 rounded-2xl border border-emerald-200/90 bg-white/95 p-3 shadow-xl shadow-slate-300/50 backdrop-blur-md">
               <div class="flex items-center gap-2.5">
