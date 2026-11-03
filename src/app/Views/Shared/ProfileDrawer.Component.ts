@@ -139,71 +139,108 @@ export const AVATAR_PRESETS: readonly string[] = [
           @if (activeTab() === 'personal') {
             <form (ngSubmit)="savePersonalProfile($event)" class="space-y-6">
               <!-- SECCIÓN DE FOTO DE PERFIL / AVATAR -->
-              <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 p-4.5 space-y-4">
-                <div class="flex items-center gap-4">
-                  <!-- Vista previa de foto -->
-                  <div class="relative shrink-0">
+              <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 p-4 space-y-4">
+                <!-- Input de archivo nativo oculto -->
+                <input
+                  #fileInput
+                  type="file"
+                  accept="image/png, image/jpeg, image/webp, image/gif"
+                  class="hidden"
+                  (change)="onFileSelected($event)"
+                />
+
+                <div
+                  class="flex items-center gap-4 p-2 sm:p-3 rounded-2xl border-2 border-dashed transition-all"
+                  [class.border-blue-500]="isDraggingFile()"
+                  [class.bg-blue-50/60]="isDraggingFile()"
+                  [class.dark:bg-blue-950/30]="isDraggingFile()"
+                  [class.border-transparent]="!isDraggingFile()"
+                  (dragover)="onDragOver($event)"
+                  (dragleave)="onDragLeave($event)"
+                  (drop)="onFileDrop($event)"
+                >
+                  <!-- Avatar con hover interactivo y botón de subir foto -->
+                  <div
+                    (click)="fileInput.click()"
+                    class="relative group cursor-pointer shrink-0 select-none"
+                    title="Haz clic para seleccionar una foto de tu equipo"
+                  >
                     @if (previewAvatarUrl()) {
                       <img
-                        [src]="previewAvatarUrl()"
-                        alt="Avatar actual"
-                        class="h-20 w-20 rounded-2xl object-cover ring-2 ring-blue-500/30 shadow-md"
+                        [src]="previewAvatarUrl()!"
+                        alt="Foto de perfil"
+                        class="h-20 w-20 rounded-2xl object-cover ring-2 ring-blue-500/30 shadow-md group-hover:brightness-75 transition-all"
                         (error)="onAvatarError()"
                       />
                     } @else {
-                      <div class="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 font-black text-2xl text-white shadow-md">
+                      <div class="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 font-black text-2xl text-white shadow-md group-hover:scale-102 transition-transform">
                         {{ (fullName().charAt(0) || 'U').toUpperCase() }}
                       </div>
                     }
-                    <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900 text-white" title="Perfil activo">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="h-3 w-3">
-                        <polyline points="20 6 9 17 4 12" />
+
+                    <!-- Capa hover con icono de cámara -->
+                    <div class="absolute inset-0 rounded-2xl bg-black/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-6 w-6">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                        <circle cx="12" cy="13" r="4" />
+                      </svg>
+                      <span class="text-[9px] font-bold mt-0.5">Elegir foto</span>
+                    </div>
+
+                    <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 ring-2 ring-white dark:ring-slate-900 text-white shadow-sm" title="Elegir foto de tus archivos">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="h-3 w-3">
+                        <path d="M12 5v14M5 12l7-7 7 7" />
                       </svg>
                     </span>
                   </div>
 
-                  <div class="min-w-0 flex-1">
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Foto de perfil</p>
-                    <p class="text-sm font-black text-slate-900 dark:text-white truncate mt-0.5">
-                      {{ fullName() || 'Usuario Firmeza' }}
-                    </p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      Pega una URL directa de tu imagen o selecciona una de las sugerencias rápidas.
-                    </p>
-                  </div>
-                </div>
+                  <!-- Información y botones de acción de imagen -->
+                  <div class="min-w-0 flex-1 space-y-2">
+                    <div>
+                      <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Foto de perfil</p>
+                      <p class="text-sm font-black text-slate-900 dark:text-white truncate">
+                        {{ fullName() || 'Usuario Firmeza' }}
+                      </p>
+                    </div>
 
-                <!-- Input para URL de foto -->
-                <div class="space-y-1.5">
-                  <label for="avatar-input" class="text-xs font-bold text-slate-700 dark:text-slate-300">
-                    Enlace de imagen (URL directa)
-                  </label>
-                  <div class="relative">
-                    <input
-                      id="avatar-input"
-                      type="url"
-                      [ngModel]="avatarUrlInput()"
-                      (ngModelChange)="onAvatarUrlInputChange($event)"
-                      name="avatarUrlInput"
-                      placeholder="https://ejemplo.com/mi-foto.jpg"
-                      class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                    />
-                    @if (avatarUrlInput()) {
+                    <div class="flex flex-wrap items-center gap-2">
                       <button
                         type="button"
-                        (click)="clearAvatar()"
-                        class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 p-1 text-xs font-bold"
-                        title="Quitar foto"
+                        (click)="fileInput.click()"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-sm shadow-blue-500/20 transition active:scale-95 cursor-pointer"
                       >
-                        Quitar
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="17 8 12 3 7 8" />
+                          <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <span>Elegir archivo</span>
                       </button>
-                    }
+
+                      @if (previewAvatarUrl()) {
+                        <button
+                          type="button"
+                          (click)="clearAvatar()"
+                          class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-500 hover:border-rose-300 dark:hover:border-rose-800 text-xs font-semibold transition active:scale-95 cursor-pointer"
+                          title="Quitar foto y usar iniciales"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5">
+                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                          </svg>
+                          <span>Quitar</span>
+                        </button>
+                      }
+                    </div>
+
+                    <p class="text-[11px] text-slate-400">
+                      Formatos: PNG, JPG o WebP. Haz clic o arrastra tu archivo.
+                    </p>
                   </div>
                 </div>
 
                 <!-- Avatares sugeridos rápidos -->
-                <div>
-                  <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2">Avatares sugeridos:</p>
+                <div class="pt-2 border-t border-slate-200/60 dark:border-slate-800">
+                  <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2">O selecciona un avatar sugerido:</p>
                   <div class="flex items-center gap-2.5">
                     @for (preset of presets; track preset) {
                       <button
@@ -555,6 +592,7 @@ export class ProfileDrawerComponent implements OnInit, OnDestroy {
   protected readonly address = signal('');
   protected readonly avatarUrlInput = signal('');
   protected readonly previewAvatarUrl = signal<string | null>(null);
+  protected readonly isDraggingFile = signal(false);
   protected readonly isSavingProfile = signal(false);
 
   // Campos de contraseña y código OTP
@@ -633,6 +671,90 @@ export class ProfileDrawerComponent implements OnInit, OnDestroy {
         // Usa datos del signal en fallback
       }
     });
+  }
+
+  protected onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.processImageFile(input.files[0]);
+      input.value = '';
+    }
+  }
+
+  protected onFileDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.isDraggingFile.set(false);
+    if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
+      this.processImageFile(event.dataTransfer.files[0]);
+    }
+  }
+
+  protected onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.isDraggingFile.set(true);
+  }
+
+  protected onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.isDraggingFile.set(false);
+  }
+
+  private processImageFile(file: File): void {
+    if (!file.type.startsWith('image/')) {
+      void Swal.fire({
+        icon: 'warning',
+        title: 'Formato no soportado',
+        text: 'Por favor selecciona un archivo de imagen (PNG, JPG o WebP).'
+      });
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      void Swal.fire({
+        icon: 'warning',
+        title: 'Archivo muy pesado',
+        text: 'La imagen supera los 10 MB. Por favor elige una imagen más ligera.'
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      if (!dataUrl) return;
+
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const targetSize = 280;
+          canvas.width = targetSize;
+          canvas.height = targetSize;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            const minDim = Math.min(img.width, img.height);
+            const startX = (img.width - minDim) / 2;
+            const startY = (img.height - minDim) / 2;
+            ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, targetSize, targetSize);
+            const compressed = canvas.toDataURL('image/jpeg', 0.88);
+            this.previewAvatarUrl.set(compressed);
+            this.avatarUrlInput.set(compressed);
+          } else {
+            this.previewAvatarUrl.set(dataUrl);
+            this.avatarUrlInput.set(dataUrl);
+          }
+        } catch {
+          this.previewAvatarUrl.set(dataUrl);
+          this.avatarUrlInput.set(dataUrl);
+        }
+      };
+      img.onerror = () => {
+        this.previewAvatarUrl.set(dataUrl);
+        this.avatarUrlInput.set(dataUrl);
+      };
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
   }
 
   protected onAvatarUrlInputChange(val: string): void {

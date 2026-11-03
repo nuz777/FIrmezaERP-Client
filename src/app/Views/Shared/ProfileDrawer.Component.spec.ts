@@ -106,4 +106,13 @@ describe('ProfileDrawerComponent', () => {
     expect(component['codeSent']()).toBe(true);
     expect(component['cooldownRemaining']()).toBe(60);
   });
+
+  it('debe manejar eventos de drag and drop para subir foto', () => {
+    const dragEvent = { preventDefault: vi.fn() } as unknown as DragEvent;
+    component['onDragOver'](dragEvent);
+    expect(component['isDraggingFile']()).toBe(true);
+
+    component['onDragLeave'](dragEvent);
+    expect(component['isDraggingFile']()).toBe(false);
+  });
 });
