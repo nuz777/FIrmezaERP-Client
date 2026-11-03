@@ -26,7 +26,15 @@ export function resolveApiUrl(): string {
       // Ignorar fallback si localStorage está bloqueado
     }
 
-    // B. Dominio en la nube (producción)
+    // B. Dominio en la nube (Render)
+    if (hostname.endsWith('.onrender.com')) {
+      const apiHost = hostname.includes('-client')
+        ? hostname.replace('-client', '-api')
+        : 'firmeza-api.onrender.com';
+      return `https://${apiHost}/api`;
+    }
+
+    // C. Dominio en la nube (producción clandev)
     if (hostname === 'firmeza.clandev.com' || hostname.endsWith('.clandev.com')) {
       return `${protocol}//services.firmeza.clandev.com/api`;
     }
