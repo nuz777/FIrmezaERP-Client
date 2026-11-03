@@ -180,11 +180,11 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
         </div>
 
         <!-- Columna de ilustración y tarjetas flotantes de producto -->
-        <div class="relative lg:col-span-6 flex justify-center pt-6 lg:pt-14">
+        <div class="relative lg:col-span-6 flex justify-center">
           <!-- Resplandor decorativo de fondo -->
           <div class="pointer-events-none absolute -inset-6 rounded-full bg-gradient-to-tr from-blue-300/35 to-indigo-200/35 blur-3xl"></div>
 
-          <div class="relative z-10 w-full max-w-[620px] lg:translate-y-8">
+          <div class="relative z-10 w-full max-w-[620px] -translate-y-3 lg:-translate-y-6">
             <img
               src="img/Godman.png"
               alt="Operación Ferretería Firmeza"
