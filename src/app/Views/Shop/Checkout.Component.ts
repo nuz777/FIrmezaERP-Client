@@ -1176,7 +1176,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   protected async confirmPurchase(): Promise<void> {
     if (this.saving() || this.cart.isEmpty()) return;
 
-    if (!this.authService.isAuthenticated()) {
+    if (!this.authService?.isAuthenticated()) {
       void Swal.fire({
         icon: 'info',
         title: 'Iniciar sesión requerido',
