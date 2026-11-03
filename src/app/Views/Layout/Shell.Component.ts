@@ -29,11 +29,12 @@ export class LogoComponent {
 }
 
 import { BottomNavComponent, BottomNavItem } from '../Shared/BottomNav.Component';
+import { ProfileDrawerComponent } from '../Shared/ProfileDrawer.Component';
 import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, LogoComponent, CurrencyPipe, DatePipe, ThemeToggleComponent, BottomNavComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, LogoComponent, CurrencyPipe, DatePipe, ThemeToggleComponent, BottomNavComponent, ProfileDrawerComponent],
   template: `
     <div class="flex min-h-screen flex-col bg-[#f8fafc] dark:bg-[#05070b]">
       <aside
@@ -362,15 +363,20 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
                 }
               </div>
 
-              <div class="flex items-center gap-3 rounded-full border border-slate-200 bg-white py-1 pl-1 pr-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+              <button
+                type="button"
+                (click)="openProfileDrawer()"
+                class="flex items-center gap-3 rounded-full border border-slate-200 bg-white py-1 pl-1 pr-4 shadow-sm hover:border-blue-400 hover:shadow-md transition cursor-pointer dark:border-slate-800 dark:bg-slate-900"
+                title="Editar mi perfil, foto y contraseña"
+              >
                 @if (authService.getUser()?.avatarUrl; as avatar) {
                   <img [src]="avatar" [alt]="authService.getUser()?.fullName" class="h-8 w-8 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700" />
                 } @else {
                   <img src="img/admin.png" alt="Admin" class="h-8 w-8 rounded-full object-cover" />
                 }
-                <span class="hidden text-sm font-bold text-slate-700 sm:block">{{ authService.getUser()?.fullName }}</span>
-                <span class="hidden rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-blue-700 sm:block">Admin</span>
-              </div>
+                <span class="hidden text-sm font-bold text-slate-700 sm:block dark:text-slate-200">{{ authService.getUser()?.fullName }}</span>
+                <span class="hidden rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-blue-700 sm:block dark:bg-blue-900/60 dark:text-blue-300">Admin</span>
+              </button>
               <button
                 type="button"
                 class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm lg:hidden"
@@ -400,6 +406,12 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
         <div class="lg:hidden">
           <app-theme-toggle variant="fab" positionClass="bottom-[88px] right-4" />
         </div>
+
+        <!-- PANEL LATERAL DE PERFIL Y SEGURIDAD (DRAWER DERECHO) -->
+        <app-profile-drawer
+          [isOpen]="isProfileDrawerOpen()"
+          (close)="closeProfileDrawer()"
+        />
       </div>
     </div>
   `
@@ -407,6 +419,15 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
 export class ShellComponent implements OnInit, OnDestroy {
   protected readonly authService = inject(AuthService);
   protected readonly notificationService = inject(AdminNotificationService);
+  protected readonly isProfileDrawerOpen = signal(false);
+
+  protected openProfileDrawer(): void {
+    this.isProfileDrawerOpen.set(true);
+  }
+
+  protected closeProfileDrawer(): void {
+    this.isProfileDrawerOpen.set(false);
+  }
   private readonly salesService = inject(SalesService);
   private readonly customerRequestsService = inject(CustomerRequestsService);
   private readonly router = inject(Router);

@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, throwError } from 'rxjs';
+import { Observable, tap, throwError } from 'rxjs';
 import { API_URL } from './Api.Service';
 
 export interface UserSession {
@@ -11,6 +11,27 @@ export interface UserSession {
   roles: string[];
   customerStatus?: 'Pending' | 'Approved' | 'Rejected' | string;
   avatarUrl?: string | null;
+  phone?: string | null;
+  address?: string | null;
+}
+
+export interface UpdateProfileRequest {
+  fullName: string;
+  phone?: string | null;
+  address?: string | null;
+  avatarUrl?: string | null;
+}
+
+export interface RequestPasswordResetCodeResponse {
+  email: string;
+  message: string;
+  expiresInMinutes: number;
+}
+
+export interface ChangePasswordWithCodeRequest {
+  code: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 export interface TokenResponse {
@@ -95,6 +116,28 @@ export class AuthService {
 
   deleteMyAccount(): Observable<void> {
     return this.http.delete<void>(`${API_URL}/auth/me`);
+  }
+
+  updateProfile(data: UpdateProfileRequest): Observable<UserSession> {
+    return this.http.put<UserSession>(`${API_URL}/auth/profile`, data).pipe(
+      tap((updated) => {
+        const current = this.currentUser();
+        const merged: UserSession = {
+          ...(current || updated),
+          ...updated
+        };
+        localStorage.setItem(this.userKey, JSON.stringify(merged));
+        this.currentUser.set(merged);
+      })
+    );
+  }
+
+  requestPasswordCode(): Observable<RequestPasswordResetCodeResponse> {
+    return this.http.post<RequestPasswordResetCodeResponse>(`${API_URL}/auth/request-password-code`, {});
+  }
+
+  changePasswordWithCode(data: ChangePasswordWithCodeRequest): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${API_URL}/auth/change-password`, data);
   }
 
   saveSession(tokens: TokenResponse): void {
