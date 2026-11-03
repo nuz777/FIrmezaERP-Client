@@ -8,28 +8,26 @@ import { LogoComponent } from '../Layout/Shell.Component';
   selector: 'app-home',
   imports: [RouterLink, LogoComponent],
   template: `
-    <!-- HEADER FLOTANTE ESTILO SAUNUZ -->
-    <header
-      class="fixed top-2 md:top-4 inset-x-0 z-50 px-3 sm:px-6 pointer-events-none transition-transform duration-300 ease-in-out"
-      [class.-translate-y-28]="isHeaderHidden() && !mobileMenuOpen()"
-    >
+    <!-- HEADER FLOTANTE ESTILO SAUNUZ (TRANSPARENTE BORROSO SIEMPRE VISIBLE) -->
+    <header class="fixed top-2 md:top-4 inset-x-0 z-50 px-3 sm:px-6 pointer-events-none">
       <div
-        class="pointer-events-auto mx-auto max-w-6xl rounded-2xl border transition-all duration-300 backdrop-blur-md animate-header-enter"
-        [class.bg-white/80]="!isScrolled()"
-        [class.dark:bg-slate-900/80]="!isScrolled()"
-        [class.border-slate-200/80]="!isScrolled()"
-        [class.dark:border-slate-800/80]="!isScrolled()"
+        class="pointer-events-auto mx-auto max-w-6xl rounded-2xl border transition-all duration-300 animate-header-enter"
+        [class.bg-white/30]="!isScrolled()"
+        [class.dark:bg-black/30]="!isScrolled()"
+        [class.border-slate-200/50]="!isScrolled()"
+        [class.dark:border-white/10]="!isScrolled()"
+        [class.backdrop-blur-md]="!isScrolled()"
         [class.shadow-lg]="!isScrolled()"
         [class.shadow-black/5]="!isScrolled()"
-        [class.dark:shadow-black/30]="!isScrolled()"
-        [class.bg-white/95]="isScrolled()"
-        [class.dark:bg-slate-900/95]="isScrolled()"
-        [class.border-slate-300/90]="isScrolled()"
-        [class.dark:border-slate-700/90]="isScrolled()"
+        [class.dark:shadow-black/20]="!isScrolled()"
+        [class.bg-white/45]="isScrolled()"
+        [class.dark:bg-black/45]="isScrolled()"
+        [class.border-slate-300/60]="isScrolled()"
+        [class.dark:border-white/15]="isScrolled()"
+        [class.backdrop-blur-xl]="isScrolled()"
         [class.shadow-xl]="isScrolled()"
         [class.shadow-black/10]="isScrolled()"
-        [class.dark:shadow-black/50]="isScrolled()"
-        [class.backdrop-blur-xl]="isScrolled()"
+        [class.dark:shadow-black/40]="isScrolled()"
       >
         <div
           class="flex items-center justify-between px-3 sm:px-5 md:px-6 transition-all duration-300"
@@ -731,7 +729,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Estados reactivos del header estilo Saunuz
   protected readonly isScrolled = signal(false);
-  protected readonly isHeaderHidden = signal(false);
   protected readonly activeSection = signal<string>('');
   protected readonly mobileMenuOpen = signal(false);
 
@@ -864,20 +861,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     const onScroll = () => {
       const currentY = window.scrollY;
 
-      // Compactar header al hacer scroll
+      // Compactar sutilmente el header al hacer scroll
       this.isScrolled.set(currentY > 20);
-
-      // Ocultar al bajar, mostrar al subir
-      if (currentY > 120 && !this.mobileMenuOpen()) {
-        const delta = currentY - this.lastScrollY;
-        if (delta > 8) {
-          this.isHeaderHidden.set(true);
-        } else if (delta < -8) {
-          this.isHeaderHidden.set(false);
-        }
-      } else {
-        this.isHeaderHidden.set(false);
-      }
 
       // Si vuelve arriba del todo, restablece sección activa
       if (currentY < 180) {
