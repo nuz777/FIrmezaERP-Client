@@ -54,20 +54,23 @@ export const routes: Routes = [
     ]
   },
   {
-    // Portal del cliente: catalogo y carrito. Fuera del bloque de administracion
-    // porque el guard de arriba exige rol Administrador.
+    // Portal del cliente y Catálogo público de materiales
     path: '',
     component: ClientShellComponent,
-    canActivate: [customerGuard],
     children: [
+      // Rutas públicas de catálogo de productos
       { path: 'tienda', component: ShopComponent },
+      { path: 'catalogo', component: ShopComponent },
       { path: 'tienda/producto/:sku', component: ShopComponent },
+      { path: 'catalogo/producto/:sku', component: ShopComponent },
       { path: 'producto/:sku', component: ShopComponent },
       { path: 'carrito', component: CheckoutComponent },
-      { path: 'mis-compras', component: MyOrdersComponent },
+
+      // Rutas privadas: requieren sesión de cliente autenticado
+      { path: 'mis-compras', component: MyOrdersComponent, canActivate: [customerGuard] },
       // El detalle lo comparte el panel y el portal: la API ya lo limita a las
       // ventas propias cuando quien llama es un Cliente.
-      { path: 'compras/:id', component: SaleDetailComponent }
+      { path: 'compras/:id', component: SaleDetailComponent, canActivate: [customerGuard] }
     ]
   },
   { path: '**', redirectTo: '' }

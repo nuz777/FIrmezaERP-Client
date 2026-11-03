@@ -37,9 +37,15 @@ import { productDetailModalOpenSignal } from './ProductDetailDrawer.Component';
 
           <nav class="ml-6 hidden items-center gap-1.5 sm:flex" aria-label="Navegación del cliente">
             <a
+              routerLink="/"
+              class="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+            >
+              Inicio
+            </a>
+            <a
               routerLink="/tienda"
-              routerLinkActive="bg-blue-50 text-blue-700 shadow-2xs font-black"
-              class="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+              routerLinkActive="bg-blue-50 text-blue-700 shadow-2xs font-black dark:bg-blue-950/60 dark:text-blue-300"
+              class="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4">
                 <rect width="7" height="7" x="3" y="3" rx="1" />
@@ -51,8 +57,8 @@ import { productDetailModalOpenSignal } from './ProductDetailDrawer.Component';
             </a>
             <a
               routerLink="/carrito"
-              routerLinkActive="bg-blue-50 text-blue-700 shadow-2xs font-black"
-              class="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+              routerLinkActive="bg-blue-50 text-blue-700 shadow-2xs font-black dark:bg-blue-950/60 dark:text-blue-300"
+              class="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
             >
               <app-icon name="cart" [size]="15" />
               Carrito
@@ -60,14 +66,16 @@ import { productDetailModalOpenSignal } from './ProductDetailDrawer.Component';
                 <span class="rounded-full bg-blue-600 px-2 py-0.5 text-[10px] font-black text-white shadow-xs">{{ cart.count() }}</span>
               }
             </a>
-            <a
-              routerLink="/mis-compras"
-              routerLinkActive="bg-blue-50 text-blue-700 shadow-2xs font-black"
-              class="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
-            >
-              <app-icon name="receipt" [size]="15" />
-              Mis compras
-            </a>
+            @if (authService.isAuthenticated()) {
+              <a
+                routerLink="/mis-compras"
+                routerLinkActive="bg-blue-50 text-blue-700 shadow-2xs font-black dark:bg-blue-950/60 dark:text-blue-300"
+                class="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+              >
+                <app-icon name="receipt" [size]="15" />
+                Mis compras
+              </a>
+            }
           </nav>
 
           <div class="ml-auto flex items-center gap-2 sm:gap-3">
@@ -180,6 +188,21 @@ import { productDetailModalOpenSignal } from './ProductDetailDrawer.Component';
                   </div>
                 }
               </div>
+            } @else {
+              <div class="flex items-center gap-2">
+                <a
+                  routerLink="/login"
+                  class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 transition hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600"
+                >
+                  Ingresar
+                </a>
+                <a
+                  routerLink="/register"
+                  class="rounded-xl bg-blue-600 px-4 py-1.5 text-xs font-black text-white shadow-xs transition hover:bg-blue-500 active:scale-95"
+                >
+                  Crear cuenta
+                </a>
+              </div>
             }
           </div>
         </div>
@@ -254,30 +277,63 @@ export class ClientShellComponent {
     }
   }
 
-  protected readonly navItems = computed<BottomNavItem[]>(() => [
-    {
-      label: 'Catálogo',
-      icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z',
-      route: '/tienda'
-    },
-    {
-      label: 'Carrito',
-      icon: 'M2 3h2l2.4 11.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 7H6M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2M18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2',
-      route: '/carrito',
-      badge: this.cart.count(),
-      badgeColor: 'bg-amber-500'
-    },
-    {
-      label: 'Mis compras',
-      icon: [
-        'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z',
-        'M14 2v6h6',
-        'M16 13H8',
-        'M16 17H8'
-      ],
-      route: '/mis-compras'
+  protected readonly navItems = computed<BottomNavItem[]>(() => {
+    if (this.authService.isAuthenticated()) {
+      return [
+        {
+          label: 'Catálogo',
+          icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z',
+          route: '/tienda'
+        },
+        {
+          label: 'Carrito',
+          icon: 'M2 3h2l2.4 11.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 7H6M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2M18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2',
+          route: '/carrito',
+          badge: this.cart.count(),
+          badgeColor: 'bg-amber-500'
+        },
+        {
+          label: 'Mis compras',
+          icon: [
+            'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z',
+            'M14 2v6h6',
+            'M16 13H8',
+            'M16 17H8'
+          ],
+          route: '/mis-compras'
+        }
+      ];
     }
-  ]);
+
+    return [
+      {
+        label: 'Inicio',
+        icon: 'm3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z',
+        route: '/'
+      },
+      {
+        label: 'Catálogo',
+        icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z',
+        route: '/tienda'
+      },
+      {
+        label: 'Carrito',
+        icon: 'M2 3h2l2.4 11.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 7H6M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2M18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2',
+        route: '/carrito',
+        badge: this.cart.count(),
+        badgeColor: 'bg-amber-500'
+      },
+      {
+        label: 'Ingresar',
+        icon: [
+          'M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4',
+          'M10 17l5-5-5-5',
+          'M15 12H3'
+        ],
+        route: '/login'
+      }
+    ];
+  });
 
   protected toggleUserMenu(): void {
     if (this.userMenuClosing()) return;

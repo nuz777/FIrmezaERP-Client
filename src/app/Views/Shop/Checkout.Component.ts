@@ -1176,6 +1176,23 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   protected async confirmPurchase(): Promise<void> {
     if (this.saving() || this.cart.isEmpty()) return;
 
+    if (!this.authService.isAuthenticated()) {
+      void Swal.fire({
+        icon: 'info',
+        title: 'Iniciar sesión requerido',
+        text: 'Debes iniciar sesión o registrarte como cliente para confirmar tu pedido de materiales.',
+        confirmButtonText: 'Iniciar sesión',
+        showCancelButton: true,
+        cancelButtonText: 'Seguir mirando',
+        confirmButtonColor: '#2563eb'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/login'], { queryParams: { returnUrl: '/carrito' } });
+        }
+      });
+      return;
+    }
+
     if (this.isCustomerPending()) {
       void Swal.fire({
         icon: 'info',
