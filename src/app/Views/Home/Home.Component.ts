@@ -1,66 +1,354 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
+import { ThemeService } from '../../Services/theme.service';
 import { LogoComponent } from '../Layout/Shell.Component';
-import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, LogoComponent, ThemeToggleComponent],
+  imports: [RouterLink, LogoComponent],
   template: `
-    <!-- Barra de navegación superior fija con efecto frosted glass -->
-    <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-md shadow-xs">
-      <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-8">
-        <a routerLink="/" class="flex items-center gap-2.5 transition hover:opacity-90">
-          <app-logo size="sm" />
-          <span class="text-xl font-black tracking-tight text-slate-950">
-            Firmeza<span class="text-blue-600">.</span>
-          </span>
-        </a>
+    <!-- HEADER FLOTANTE ESTILO SAUNUZ -->
+    <header
+      class="fixed top-2 md:top-4 inset-x-0 z-50 px-3 sm:px-6 pointer-events-none transition-transform duration-300 ease-in-out"
+      [class.-translate-y-28]="isHeaderHidden() && !mobileMenuOpen()"
+    >
+      <div
+        class="pointer-events-auto mx-auto max-w-6xl rounded-2xl border transition-all duration-300 backdrop-blur-md animate-header-enter"
+        [class.bg-white/80]="!isScrolled()"
+        [class.dark:bg-slate-900/80]="!isScrolled()"
+        [class.border-slate-200/80]="!isScrolled()"
+        [class.dark:border-slate-800/80]="!isScrolled()"
+        [class.shadow-lg]="!isScrolled()"
+        [class.shadow-black/5]="!isScrolled()"
+        [class.dark:shadow-black/30]="!isScrolled()"
+        [class.bg-white/95]="isScrolled()"
+        [class.dark:bg-slate-900/95]="isScrolled()"
+        [class.border-slate-300/90]="isScrolled()"
+        [class.dark:border-slate-700/90]="isScrolled()"
+        [class.shadow-xl]="isScrolled()"
+        [class.shadow-black/10]="isScrolled()"
+        [class.dark:shadow-black/50]="isScrolled()"
+        [class.backdrop-blur-xl]="isScrolled()"
+      >
+        <div
+          class="flex items-center justify-between px-3 sm:px-5 md:px-6 transition-all duration-300"
+          [class.h-14]="isScrolled()"
+          [class.md:h-14]="isScrolled()"
+          [class.h-16]="!isScrolled()"
+          [class.md:h-16]="!isScrolled()"
+        >
+          <!-- Logo / Marca a la izquierda -->
+          <a
+            routerLink="/"
+            (click)="scrollToTop($event)"
+            class="flex items-center gap-2 group cursor-pointer select-none"
+            aria-label="Firmeza Home"
+          >
+            <app-logo size="sm" />
+            <span class="text-xl md:text-2xl font-black tracking-tight text-slate-900 dark:text-white transition-colors">
+              Firmeza<span class="text-blue-600">.</span>
+            </span>
+          </a>
 
-        <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-slate-600">
-          <a href="#modulos" class="transition hover:text-blue-600">Módulos</a>
-          <a href="#metricas" class="transition hover:text-blue-600">Indicadores</a>
-          <a href="#flujo" class="transition hover:text-blue-600">Flujo comercial</a>
-          <a routerLink="/tienda" class="flex items-center gap-1.5 text-blue-600 transition hover:text-blue-700">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5">
+          <!-- Links de navegación de escritorio en mayúsculas con tracking y subrayado animado -->
+          <nav class="hidden md:flex items-center gap-5 lg:gap-7">
+            <!-- MÓDULOS -->
+            <button
+              type="button"
+              (click)="scrollToSection('modulos')"
+              class="relative text-xs lg:text-sm uppercase tracking-wider font-bold cursor-pointer group pb-1 transition-colors"
+              [class.text-blue-600]="activeSection() === 'modulos'"
+              [class.dark:text-blue-400]="activeSection() === 'modulos'"
+              [class.text-slate-600]="activeSection() !== 'modulos'"
+              [class.dark:text-slate-300]="activeSection() !== 'modulos'"
+              [class.hover:text-slate-950]="activeSection() !== 'modulos'"
+              [class.dark:hover:text-white]="activeSection() !== 'modulos'"
+            >
+              <span>Módulos</span>
+              <span
+                class="absolute -bottom-1 left-0 h-0.5 bg-blue-600 dark:bg-blue-400 rounded-full transition-all duration-300"
+                [class.w-full]="activeSection() === 'modulos'"
+                [class.w-0]="activeSection() !== 'modulos'"
+                [class.group-hover:w-full]="activeSection() !== 'modulos'"
+              ></span>
+            </button>
+
+            <!-- INDICADORES -->
+            <button
+              type="button"
+              (click)="scrollToSection('indicadores')"
+              class="relative text-xs lg:text-sm uppercase tracking-wider font-bold cursor-pointer group pb-1 transition-colors"
+              [class.text-blue-600]="activeSection() === 'indicadores'"
+              [class.dark:text-blue-400]="activeSection() === 'indicadores'"
+              [class.text-slate-600]="activeSection() !== 'indicadores'"
+              [class.dark:text-slate-300]="activeSection() !== 'indicadores'"
+              [class.hover:text-slate-950]="activeSection() !== 'indicadores'"
+              [class.dark:hover:text-white]="activeSection() !== 'indicadores'"
+            >
+              <span>Indicadores</span>
+              <span
+                class="absolute -bottom-1 left-0 h-0.5 bg-blue-600 dark:bg-blue-400 rounded-full transition-all duration-300"
+                [class.w-full]="activeSection() === 'indicadores'"
+                [class.w-0]="activeSection() !== 'indicadores'"
+                [class.group-hover:w-full]="activeSection() !== 'indicadores'"
+              ></span>
+            </button>
+
+            <!-- FLUJO COMERCIAL -->
+            <button
+              type="button"
+              (click)="scrollToSection('flujo-comercial')"
+              class="relative text-xs lg:text-sm uppercase tracking-wider font-bold cursor-pointer group pb-1 transition-colors"
+              [class.text-blue-600]="activeSection() === 'flujo-comercial'"
+              [class.dark:text-blue-400]="activeSection() === 'flujo-comercial'"
+              [class.text-slate-600]="activeSection() !== 'flujo-comercial'"
+              [class.dark:text-slate-300]="activeSection() !== 'flujo-comercial'"
+              [class.hover:text-slate-950]="activeSection() !== 'flujo-comercial'"
+              [class.dark:hover:text-white]="activeSection() !== 'flujo-comercial'"
+            >
+              <span>Flujo comercial</span>
+              <span
+                class="absolute -bottom-1 left-0 h-0.5 bg-blue-600 dark:bg-blue-400 rounded-full transition-all duration-300"
+                [class.w-full]="activeSection() === 'flujo-comercial'"
+                [class.w-0]="activeSection() !== 'flujo-comercial'"
+                [class.group-hover:w-full]="activeSection() !== 'flujo-comercial'"
+              ></span>
+            </button>
+
+            <!-- CATÁLOGO -->
+            <a
+              routerLink="/tienda"
+              class="relative text-xs lg:text-sm uppercase tracking-wider font-bold cursor-pointer group pb-1 transition-colors flex items-center gap-1.5"
+              [class.text-blue-600]="activeSection() === 'tienda'"
+              [class.dark:text-blue-400]="activeSection() === 'tienda'"
+              [class.text-slate-600]="activeSection() !== 'tienda'"
+              [class.dark:text-slate-300]="activeSection() !== 'tienda'"
+              [class.hover:text-slate-950]="activeSection() !== 'tienda'"
+              [class.dark:hover:text-white]="activeSection() !== 'tienda'"
+            >
+              <span>Catálogo</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5">
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+              <span
+                class="absolute -bottom-1 left-0 h-0.5 bg-blue-600 dark:bg-blue-400 rounded-full transition-all duration-300"
+                [class.w-full]="activeSection() === 'tienda'"
+                [class.w-0]="activeSection() !== 'tienda'"
+                [class.group-hover:w-full]="activeSection() !== 'tienda'"
+              ></span>
+            </a>
+          </nav>
+
+          <!-- Acciones derecha: Toggle tema + Auth buttons (Escritorio) -->
+          <div class="hidden md:flex items-center gap-2.5 lg:gap-3">
+            <!-- Botón cambio de tema idéntico a Saunuz -->
+            <button
+              type="button"
+              (click)="theme.toggle()"
+              class="p-2 rounded-xl text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              [attr.aria-label]="theme.isDark() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+              [attr.title]="theme.isDark() ? 'Activar modo claro' : 'Activar modo oscuro'"
+            >
+              @if (theme.isDark()) {
+                <svg class="h-4.5 w-4.5 text-blue-400 transition-transform duration-300 hover:rotate-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                </svg>
+              } @else {
+                <svg class="h-4.5 w-4.5 text-slate-700 transition-transform duration-300 hover:rotate-45" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                </svg>
+              }
+            </button>
+
+            <!-- Botón Ingresar -->
+            <a
+              routerLink="/login"
+              class="inline-flex items-center gap-1.5 rounded-full border border-slate-200/90 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 shadow-2xs transition hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              Ingresar
+            </a>
+
+            <!-- Botón Crear cuenta -->
+            <a
+              routerLink="/register"
+              class="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-4 py-1.5 text-xs font-black text-white shadow-md shadow-blue-500/20 transition hover:bg-blue-500 active:scale-95"
+            >
+              Crear cuenta
+            </a>
+          </div>
+
+          <!-- Acciones móvil: Botón tema + Botón Hamburguesa -->
+          <div class="flex items-center gap-1.5 md:hidden">
+            <!-- Botón de tema en móvil -->
+            <button
+              type="button"
+              (click)="theme.toggle()"
+              class="p-2 rounded-xl text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer"
+              [attr.aria-label]="theme.isDark() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+            >
+              @if (theme.isDark()) {
+                <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                </svg>
+              } @else {
+                <svg class="h-5 w-5 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                </svg>
+              }
+            </button>
+
+            <!-- Hamburguesa móvil estilo Saunuz -->
+            <button
+              type="button"
+              (click)="toggleMobileMenu()"
+              class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 p-2 rounded-xl transition-colors cursor-pointer"
+              aria-label="Abrir menú"
+            >
+              @if (!mobileMenuOpen()) {
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  <line x1="4" y1="18" x2="20" y2="18" />
+                </svg>
+              } @else {
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Overlay oscuro para menú móvil -->
+    <div
+      class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs transition-opacity duration-300 md:hidden"
+      [class.opacity-100]="mobileMenuOpen()"
+      [class.pointer-events-auto]="mobileMenuOpen()"
+      [class.opacity-0]="!mobileMenuOpen()"
+      [class.pointer-events-none]="!mobileMenuOpen()"
+      (click)="closeMobileMenu()"
+    ></div>
+
+    <!-- Menú lateral móvil (Drawer) idéntico a Saunuz -->
+    <div
+      class="fixed top-0 right-0 z-50 h-full w-72 max-w-[85vw] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200 dark:border-slate-800 shadow-2xl transform transition-transform duration-300 ease-in-out md:hidden flex flex-col justify-between"
+      [class.translate-x-0]="mobileMenuOpen()"
+      [class.translate-x-full]="!mobileMenuOpen()"
+    >
+      <div>
+        <!-- Cabecera del Drawer -->
+        <div class="flex items-center justify-between px-6 h-16 border-b border-slate-200 dark:border-slate-800">
+          <span class="text-xs font-black uppercase tracking-widest text-slate-800 dark:text-slate-200">Menú</span>
+          <button
+            type="button"
+            (click)="closeMobileMenu()"
+            class="text-blue-600 dark:text-blue-400 hover:text-blue-500 p-1.5 rounded-lg transition-colors cursor-pointer"
+            aria-label="Cerrar menú"
+          >
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Enlaces en móvil con indicador lateral izquierdo -->
+        <nav class="py-4 flex flex-col">
+          <button
+            type="button"
+            (click)="scrollToSection('modulos')"
+            class="px-6 py-3.5 text-xs uppercase tracking-wider font-bold text-left transition-all w-full cursor-pointer border-l-2 flex items-center justify-between"
+            [class.border-blue-600]="activeSection() === 'modulos'"
+            [class.text-blue-600]="activeSection() === 'modulos'"
+            [class.bg-blue-50/50]="activeSection() === 'modulos'"
+            [class.dark:bg-blue-950/30]="activeSection() === 'modulos'"
+            [class.border-transparent]="activeSection() !== 'modulos'"
+            [class.text-slate-600]="activeSection() !== 'modulos'"
+            [class.dark:text-slate-300]="activeSection() !== 'modulos'"
+          >
+            <span>Módulos</span>
+            @if (activeSection() === 'modulos') {
+              <span class="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
+            }
+          </button>
+
+          <button
+            type="button"
+            (click)="scrollToSection('indicadores')"
+            class="px-6 py-3.5 text-xs uppercase tracking-wider font-bold text-left transition-all w-full cursor-pointer border-l-2 flex items-center justify-between"
+            [class.border-blue-600]="activeSection() === 'indicadores'"
+            [class.text-blue-600]="activeSection() === 'indicadores'"
+            [class.bg-blue-50/50]="activeSection() === 'indicadores'"
+            [class.dark:bg-blue-950/30]="activeSection() === 'indicadores'"
+            [class.border-transparent]="activeSection() !== 'indicadores'"
+            [class.text-slate-600]="activeSection() !== 'indicadores'"
+            [class.dark:text-slate-300]="activeSection() !== 'indicadores'"
+          >
+            <span>Indicadores</span>
+            @if (activeSection() === 'indicadores') {
+              <span class="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
+            }
+          </button>
+
+          <button
+            type="button"
+            (click)="scrollToSection('flujo-comercial')"
+            class="px-6 py-3.5 text-xs uppercase tracking-wider font-bold text-left transition-all w-full cursor-pointer border-l-2 flex items-center justify-between"
+            [class.border-blue-600]="activeSection() === 'flujo-comercial'"
+            [class.text-blue-600]="activeSection() === 'flujo-comercial'"
+            [class.bg-blue-50/50]="activeSection() === 'flujo-comercial'"
+            [class.dark:bg-blue-950/30]="activeSection() === 'flujo-comercial'"
+            [class.border-transparent]="activeSection() !== 'flujo-comercial'"
+            [class.text-slate-600]="activeSection() !== 'flujo-comercial'"
+            [class.dark:text-slate-300]="activeSection() !== 'flujo-comercial'"
+          >
+            <span>Flujo comercial</span>
+            @if (activeSection() === 'flujo-comercial') {
+              <span class="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
+            }
+          </button>
+
+          <a
+            routerLink="/tienda"
+            (click)="closeMobileMenu()"
+            class="px-6 py-3.5 text-xs uppercase tracking-wider font-bold text-left transition-all w-full cursor-pointer border-l-2 flex items-center justify-between border-transparent text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+          >
+            <span>Catálogo</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4 text-blue-600">
               <circle cx="9" cy="21" r="1" />
               <circle cx="20" cy="21" r="1" />
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
             </svg>
-            Catálogo
           </a>
         </nav>
-
-        <div class="flex items-center gap-3">
-          <div class="hidden sm:block">
-            <app-theme-toggle size="sm" />
-          </div>
-          <a
-            routerLink="/login"
-            class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-2xs transition hover:border-slate-300 hover:bg-slate-50 hover:text-blue-600"
-          >
-            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" class="h-3.5 w-3.5 text-slate-400">
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-              <polyline points="10 17 15 12 10 7" />
-              <line x1="15" y1="12" x2="3" y2="12" />
-            </svg>
-            Ingresar
-          </a>
-          <a
-            routerLink="/register"
-            class="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-black text-white shadow-md shadow-blue-500/20 transition hover:bg-blue-500 active:scale-95"
-          >
-            <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" class="h-3.5 w-3.5">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M19 8v6m3-3h-6" />
-            </svg>
-            Crear cuenta
-          </a>
-        </div>
       </div>
-    </header>
+
+      <!-- Pie del Drawer con botones de acceso y tema -->
+      <div class="p-6 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-3">
+        <a
+          routerLink="/login"
+          (click)="closeMobileMenu()"
+          class="w-full text-center py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-blue-600 transition-colors"
+        >
+          Ingresar
+        </a>
+        <a
+          routerLink="/register"
+          (click)="closeMobileMenu()"
+          class="w-full text-center py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-black text-white shadow-md shadow-blue-500/25 transition-all"
+        >
+          Crear cuenta
+        </a>
+      </div>
+    </div>
 
     <!-- SECCIÓN HERO PRINCIPAL -->
     <section class="relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white via-slate-50/60 to-blue-50/30">
@@ -111,7 +399,7 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
         </g>
       </svg>
 
-      <div class="relative z-10 mx-auto grid max-w-7xl gap-8 px-5 pb-16 pt-10 lg:grid-cols-12 lg:items-center lg:gap-12 lg:px-8">
+      <div class="relative z-10 mx-auto grid max-w-7xl gap-8 px-5 pb-16 pt-24 sm:pt-28 md:pt-32 lg:grid-cols-12 lg:items-center lg:gap-12 lg:px-8">
         <!-- Columna de contenido textual -->
         <div class="lg:col-span-6">
           <div class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50/90 px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-blue-700 shadow-2xs">
@@ -291,7 +579,7 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
     </section>
 
     <!-- SECCIÓN DE MÉTRICAS / ESTADÍSTICAS -->
-    <section id="metricas" class="border-b border-slate-200 bg-white py-12">
+    <section id="indicadores" class="scroll-mt-24 sm:scroll-mt-28 border-b border-slate-200 bg-white py-12">
       <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
           @for (stat of stats; track stat.label) {
@@ -305,7 +593,7 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
     </section>
 
     <!-- SECCIÓN DE MÓDULOS -->
-    <section id="modulos" class="py-16 bg-slate-50/60 border-b border-slate-200">
+    <section id="modulos" class="scroll-mt-24 sm:scroll-mt-28 py-16 bg-slate-50/60 border-b border-slate-200">
       <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="max-w-2xl">
           <p class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-blue-600">
@@ -347,7 +635,7 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
     </section>
 
     <!-- SECCIÓN DE FLUJO COMERCIAL -->
-    <section id="flujo" class="py-16 bg-white border-b border-slate-200">
+    <section id="flujo-comercial" class="scroll-mt-24 sm:scroll-mt-28 py-16 bg-white border-b border-slate-200">
       <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="text-center max-w-2xl mx-auto">
           <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-black uppercase tracking-wider text-blue-700 ring-1 ring-blue-200">
@@ -434,16 +722,23 @@ import { ThemeToggleComponent } from '../Shared/ThemeToggle.Component';
         </div>
       </div>
     </footer>
-
-    <!-- Botón flotante de Modo Claro / Oscuro para móvil -->
-    <div class="sm:hidden">
-      <app-theme-toggle variant="fab" positionClass="bottom-5 right-5" />
-    </div>
   `
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  protected readonly theme = inject(ThemeService);
+
+  // Estados reactivos del header estilo Saunuz
+  protected readonly isScrolled = signal(false);
+  protected readonly isHeaderHidden = signal(false);
+  protected readonly activeSection = signal<string>('');
+  protected readonly mobileMenuOpen = signal(false);
+
+  private lastScrollY = 0;
+  private scrollCleanUp?: () => void;
+  private observer?: IntersectionObserver;
+  private resizeCleanUp?: () => void;
 
   protected readonly highlights = [
     { label: 'Disponibilidad', value: '99,9 % uptime', iconClass: 'text-emerald-600' },
@@ -497,9 +792,150 @@ export class HomeComponent implements OnInit {
     }
   ];
 
+  scrollToSection(id: string): void {
+    this.closeMobileMenu();
+    if (typeof document === 'undefined') return;
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.pushState(null, '', `#${id}`);
+      this.activeSection.set(id);
+    }
+  }
+
+  scrollToTop(event?: Event): void {
+    event?.preventDefault();
+    this.closeMobileMenu();
+    if (typeof window === 'undefined') return;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    history.pushState(null, '', window.location.pathname);
+    this.activeSection.set('');
+  }
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen.update(v => !v);
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = this.mobileMenuOpen() ? 'hidden' : '';
+    }
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen.set(false);
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
+    }
+  }
+
   ngOnInit(): void {
     if (this.authService.isAuthenticated() && this.authService.isAdministrator()) {
       this.router.navigate(['/dashboard']);
+      return;
     }
+
+    this.initScrollEffects();
+    this.initScrollSpy();
+
+    // Soporte para URLs directas con ancla (ej: /#indicadores)
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hash = window.location.hash.replace('#', '');
+      if (['modulos', 'indicadores', 'flujo-comercial'].includes(hash)) {
+        this.activeSection.set(hash);
+        setTimeout(() => {
+          document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 250);
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.scrollCleanUp?.();
+    this.resizeCleanUp?.();
+    this.observer?.disconnect();
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
+    }
+  }
+
+  private initScrollEffects(): void {
+    if (typeof window === 'undefined') return;
+
+    this.lastScrollY = window.scrollY;
+
+    const onScroll = () => {
+      const currentY = window.scrollY;
+
+      // Compactar header al hacer scroll
+      this.isScrolled.set(currentY > 20);
+
+      // Ocultar al bajar, mostrar al subir
+      if (currentY > 120 && !this.mobileMenuOpen()) {
+        const delta = currentY - this.lastScrollY;
+        if (delta > 8) {
+          this.isHeaderHidden.set(true);
+        } else if (delta < -8) {
+          this.isHeaderHidden.set(false);
+        }
+      } else {
+        this.isHeaderHidden.set(false);
+      }
+
+      // Si vuelve arriba del todo, restablece sección activa
+      if (currentY < 180) {
+        this.activeSection.set('');
+      }
+
+      this.lastScrollY = currentY;
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    this.scrollCleanUp = () => window.removeEventListener('scroll', onScroll);
+
+    // Cerrar menú móvil automáticamente si se redimensiona a escritorio
+    const onResize = () => {
+      if (window.innerWidth >= 768 && this.mobileMenuOpen()) {
+        this.closeMobileMenu();
+      }
+    };
+    window.addEventListener('resize', onResize, { passive: true });
+    this.resizeCleanUp = () => window.removeEventListener('resize', onResize);
+  }
+
+  private initScrollSpy(): void {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+
+    // Secciones que rastrea el scroll spy
+    const sectionIds = ['modulos', 'indicadores', 'flujo-comercial'];
+
+    setTimeout(() => {
+      const elements = sectionIds
+        .map(id => document.getElementById(id))
+        .filter((el): el is HTMLElement => el !== null);
+
+      if (elements.length === 0) return;
+
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          if (window.scrollY < 180) {
+            this.activeSection.set('');
+            return;
+          }
+
+          const visibleEntries = entries.filter(e => e.isIntersecting);
+          if (visibleEntries.length > 0) {
+            visibleEntries.sort(
+              (a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top)
+            );
+            this.activeSection.set(visibleEntries[0].target.id);
+          }
+        },
+        {
+          root: null,
+          rootMargin: '-20% 0px -55% 0px',
+          threshold: [0.1, 0.25, 0.5]
+        }
+      );
+
+      elements.forEach(el => this.observer?.observe(el));
+    }, 150);
   }
 }
