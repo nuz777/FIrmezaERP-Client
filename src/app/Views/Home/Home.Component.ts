@@ -448,10 +448,10 @@ import { LogoComponent } from '../Layout/Shell.Component';
           </g>
         </svg>
 
-        <div class="relative z-10 mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16 pt-20 sm:pt-28 md:pt-32 lg:grid-cols-12 lg:items-center lg:gap-12">
+        <div class="relative z-10 mx-auto grid max-w-7xl gap-8 px-5 pb-16 pt-24 sm:pt-28 md:pt-32 lg:grid-cols-12 lg:items-center lg:gap-12 lg:px-8">
           <!-- Columna de contenido textual -->
           <div class="lg:col-span-6">
-            <div class="inline-flex items-center gap-2 rounded-full border border-blue-200 dark:border-blue-800/80 bg-blue-50/90 dark:bg-blue-950/60 px-3 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs font-black uppercase tracking-wider text-blue-700 dark:text-blue-300 shadow-2xs">
+            <div class="inline-flex items-center gap-2 rounded-full border border-blue-200 dark:border-blue-800/80 bg-blue-50/90 dark:bg-blue-950/60 px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-blue-700 dark:text-blue-300 shadow-2xs">
               <span class="relative flex h-2 w-2">
                 <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
                 <span class="relative inline-flex h-2 w-2 rounded-full bg-blue-600"></span>
@@ -459,22 +459,22 @@ import { LogoComponent } from '../Layout/Shell.Component';
               Gestión Ferretera & Construcción
             </div>
 
-            <h1 class="mt-4 sm:mt-5 text-3xl sm:text-5xl lg:text-6xl font-black leading-[1.14] tracking-tight text-slate-950 dark:text-white">
+            <h1 class="mt-5 text-4xl font-black leading-[1.12] tracking-tight text-slate-950 dark:text-white sm:text-5xl lg:text-6xl">
               Control integral de inventario, clientes y ventas
-              <span class="block mt-1 sm:mt-2 bg-gradient-to-r from-blue-600 via-sky-600 to-indigo-600 bg-clip-text text-transparent">
+              <span class="bg-gradient-to-r from-blue-600 via-sky-600 to-indigo-600 bg-clip-text text-transparent">
                 en una sola plataforma
               </span>
             </h1>
 
-            <p class="mt-3.5 sm:mt-5 max-w-xl text-sm sm:text-base lg:text-lg leading-relaxed text-slate-600 dark:text-slate-300">
+            <p class="mt-5 max-w-xl text-base leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg">
               Firmeza centraliza el catálogo de materiales de construcción, la gestión de clientes y el registro de ventas con trazabilidad completa, cálculo automático de IVA y control estricto de existencias.
             </p>
 
-            <!-- Botones de acción principales (Mobile first: full width en pantalla chica) -->
-            <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <!-- Botones de acción principales -->
+            <div class="mt-8 flex flex-wrap items-center gap-3.5">
               <a
                 routerLink="/login"
-                class="group inline-flex items-center justify-center gap-2.5 rounded-xl bg-blue-600 px-5 sm:px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-blue-500/25 transition hover:bg-blue-500 hover:shadow-blue-500/35 active:scale-95 text-center"
+                class="group inline-flex items-center gap-2.5 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-blue-500/25 transition hover:bg-blue-500 hover:shadow-blue-500/35 active:scale-95"
               >
                 <span>Acceder al panel</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="h-4 w-4 transition-transform group-hover:translate-x-1">
@@ -484,7 +484,7 @@ import { LogoComponent } from '../Layout/Shell.Component';
 
               <a
                 routerLink="/tienda"
-                class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/95 dark:bg-slate-800/90 px-5 py-3.5 text-sm font-bold text-slate-700 dark:text-slate-200 shadow-sm transition hover:border-blue-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 active:scale-95 text-center"
+                class="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/95 dark:bg-slate-800/90 px-5 py-3.5 text-sm font-bold text-slate-700 dark:text-slate-200 shadow-sm transition hover:border-blue-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 active:scale-95"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4 text-blue-600">
                   <circle cx="9" cy="21" r="1" />
@@ -496,7 +496,7 @@ import { LogoComponent } from '../Layout/Shell.Component';
 
               <a
                 routerLink="/register"
-                class="inline-flex items-center justify-center sm:justify-start gap-1.5 text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white py-1 transition text-center"
+                class="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
               >
                 ¿Eres cliente? Regístrate →
               </a>
