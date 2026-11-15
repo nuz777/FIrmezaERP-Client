@@ -399,54 +399,19 @@ import { LogoComponent } from '../Layout/Shell.Component';
         </div>
       </div>
 
-      <!-- SECCIÓN HERO PRINCIPAL (OPTIMIZADA PARA MÓVIL) -->
-      <section class="relative overflow-hidden border-b border-slate-200 dark:border-slate-800 bg-gradient-to-b from-white via-slate-50/60 to-blue-50/30 dark:from-slate-950 dark:via-slate-900/60 dark:to-blue-950/20">
-        <!-- Malla decorativa sutil -->
-        <div class="pointer-events-none absolute inset-0 auth-grid opacity-30 sm:opacity-40"></div>
-
-        <!-- Skyline de edificios en la base de la sección -->
-        <svg
-          class="pointer-events-none absolute inset-x-0 bottom-0 h-44 sm:h-64 w-full select-none opacity-40 dark:opacity-20"
-          viewBox="0 0 1200 300"
-          preserveAspectRatio="xMidYMax slice"
-          aria-hidden="true"
-        >
-          <defs>
-            <pattern id="ventanasHome" width="14" height="18" patternUnits="userSpaceOnUse">
-              <rect x="3" y="4" width="6" height="8" fill="#ffffff" opacity=".8" />
-            </pattern>
-            <g id="edificiosHome">
-              <rect x="0" y="140" width="90" height="160" />
-              <rect x="90" y="100" width="70" height="200" />
-              <rect x="160" y="170" width="100" height="130" />
-              <rect x="260" y="80" width="80" height="220" />
-              <rect x="340" y="150" width="110" height="150" />
-              <rect x="450" y="110" width="70" height="190" />
-              <rect x="520" y="60" width="90" height="240" />
-              <rect x="610" y="140" width="100" height="160" />
-              <rect x="710" y="90" width="80" height="210" />
-              <rect x="790" y="160" width="110" height="140" />
-              <rect x="900" y="70" width="80" height="230" />
-              <rect x="980" y="130" width="100" height="170" />
-              <rect x="1080" y="100" width="120" height="200" />
-            </g>
-            <clipPath id="recorteHome"><use href="#edificiosHome" /></clipPath>
-          </defs>
-
-          <use href="#edificiosHome" fill="#cbd5e1" opacity=".5" />
-          <rect width="1200" height="300" fill="url(#ventanasHome)" clip-path="url(#recorteHome)" opacity=".6" />
-          <g fill="#bfdbfe" opacity=".65">
-            <rect x="40" y="200" width="100" height="100" />
-            <rect x="140" y="170" width="70" height="130" />
-            <rect x="230" y="210" width="120" height="90" />
-            <rect x="380" y="180" width="80" height="120" />
-            <rect x="490" y="220" width="110" height="80" />
-            <rect x="640" y="190" width="90" height="110" />
-            <rect x="760" y="215" width="120" height="85" />
-            <rect x="910" y="185" width="80" height="115" />
-            <rect x="1020" y="210" width="110" height="90" />
-          </g>
-        </svg>
+      <!-- SECCIÓN HERO PRINCIPAL CON FONDO Fondohero.png -->
+      <section class="relative overflow-hidden border-b border-slate-200 dark:border-slate-800 bg-slate-900">
+        <!-- Imagen de fondo Fondohero.png -->
+        <div class="pointer-events-none absolute inset-0 select-none">
+          <img
+            src="img/Fondohero.png"
+            alt="Fondo Hero Ferretería Firmeza"
+            class="h-full w-full object-cover object-center"
+          />
+          <!-- Degradados de cobertura para contraste y legibilidad impecable -->
+          <div class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/60 dark:from-slate-950/95 dark:via-slate-950/85 dark:to-slate-950/60"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-white/40 dark:from-slate-950 dark:via-transparent dark:to-slate-950/40"></div>
+        </div>
 
         <div class="relative z-10 mx-auto grid max-w-7xl gap-8 px-5 pb-16 pt-24 sm:pt-28 md:pt-32 lg:grid-cols-12 lg:items-center lg:gap-12 lg:px-8">
           <!-- Columna de contenido textual -->
@@ -519,11 +484,8 @@ import { LogoComponent } from '../Layout/Shell.Component';
           </div>
 
           <!-- Columna de ilustración y tarjetas flotantes (Sin desborde lateral en celular) -->
-          <div class="relative lg:col-span-6 flex justify-center mt-4 lg:mt-0">
-            <!-- Resplandor decorativo de fondo -->
-            <div class="pointer-events-none absolute -inset-4 sm:-inset-6 rounded-full bg-gradient-to-tr from-blue-300/35 to-indigo-200/35 dark:from-blue-600/20 dark:to-indigo-600/20 blur-2xl sm:blur-3xl"></div>
-
-            <div class="relative z-10 w-full max-w-[300px] sm:max-w-[380px] lg:max-w-[560px]">
+          <div class="relative lg:col-span-6 flex justify-center mt-5 lg:mt-0">
+            <div class="relative z-10 w-full max-w-[300px] sm:max-w-[380px] lg:max-w-[560px] translate-y-6 sm:translate-y-8 lg:translate-y-14">
               <img
                 src="img/Godman.png"
                 alt="Operación Ferretería Firmeza"
