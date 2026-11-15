@@ -525,73 +525,133 @@ import { LogoComponent } from '../Layout/Shell.Component';
           </div>
         </div>
 
-        <!-- Widget interactivo: Vista previa del panel de operaciones -->
-        <div class="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16 lg:px-8">
-          <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl shadow-slate-200/60 dark:shadow-black/40">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 px-4 sm:px-5 py-3.5">
+        <!-- Widget interactivo: Gráfica de barras de operaciones de inventario -->
+        <div class="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 mt-10 sm:mt-16 lg:mt-24 pb-16 sm:pb-24">
+          <div class="overflow-hidden rounded-2xl sm:rounded-3xl border border-white/20 dark:border-white/[0.07] bg-transparent shadow-2xl shadow-blue-950/10 dark:shadow-black/70 backdrop-blur-2xl sm:backdrop-blur-3xl">
+
+            <!-- Barra superior del widget -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/20 dark:border-white/[0.07] bg-transparent px-4 sm:px-6 py-4">
               <div class="flex items-center gap-3">
-                <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-300 dark:shadow-blue-900 shrink-0">
-                  <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
-                    <path d="M13.35 1.5h-.92L4.35 14h4.46l-4 8.5h.85L14.69 16H8.9l5.6-14.5Z" />
+                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30 shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="h-4.5 w-4.5">
+                    <path d="M18 20V10M12 20V4M6 20v-6" />
                   </svg>
                 </span>
                 <div>
-                  <p class="text-xs font-black text-slate-950 dark:text-white">Panel de operaciones de inventario</p>
+                  <div class="flex items-center gap-2">
+                    <p class="text-xs sm:text-sm font-black text-slate-950 dark:text-white">Panel de operaciones de inventario</p>
+                    <span class="hidden sm:inline-flex items-center gap-1 rounded-full bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/20 px-2 py-0.5 text-[10px] font-black text-blue-700 dark:text-blue-300">En vivo</span>
+                  </div>
                   <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400">Sincronización en tiempo real · Catálogo activo</p>
                 </div>
               </div>
-              <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1 text-[11px] sm:text-xs font-black text-emerald-700 dark:text-emerald-300 shrink-0">
-                <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Operativo · 100%
-              </span>
+
+              <div class="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
+                <div class="inline-flex rounded-xl bg-white/20 dark:bg-white/[0.06] border border-white/30 dark:border-white/10 p-0.5 text-[11px] font-bold backdrop-blur-md">
+                  <button type="button" (click)="setChartMetric('stock')"
+                    [class]="chartMetric() === 'stock' ? 'bg-white/90 text-blue-600 shadow-sm dark:bg-blue-600 dark:text-white' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
+                    class="rounded-lg px-3 py-1 transition-all cursor-pointer">Existencias (Uds)</button>
+                  <button type="button" (click)="setChartMetric('value')"
+                    [class]="chartMetric() === 'value' ? 'bg-white/90 text-blue-600 shadow-sm dark:bg-blue-600 dark:text-white' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
+                    class="rounded-lg px-3 py-1 transition-all cursor-pointer">Valorización</button>
+                </div>
+                <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-black text-emerald-700 dark:text-emerald-400 shrink-0">
+                  <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Operativo · 100%
+                </span>
+              </div>
             </div>
 
-            <!-- Hint de desplazamiento en móvil -->
-            <div class="sm:hidden px-4 pt-2 flex items-center justify-between text-[10px] font-semibold text-slate-400 dark:text-slate-500">
-              <span>↔ Desliza la tabla para ver existencias y precios</span>
-            </div>
+            <!-- Gráfica de Barras -->
+            <div class="p-4 sm:p-6 lg:p-7">
+              <div class="relative rounded-2xl border border-white/10 dark:border-white/[0.04] bg-white/5 dark:bg-white/[0.03] p-4 sm:p-6 backdrop-blur-3xl">
 
-            <div class="overflow-x-auto p-2 sm:p-4">
-              <table class="w-full min-w-[500px] text-left text-xs">
-                <thead>
-                  <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 font-black uppercase tracking-wider text-[10px]">
-                    <th class="py-2.5 px-3">Código</th>
-                    <th class="py-2.5 px-3">Descripción de material</th>
-                    <th class="py-2.5 px-3 text-right">Existencias</th>
-                    <th class="py-2.5 px-3 text-right">Precio unitario</th>
-                    <th class="py-2.5 px-3 text-center">Estado</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
-                  @for (row of sampleRows; track row.sku) {
-                    <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition">
-                      <td class="py-3 px-3 font-mono font-bold text-slate-900 dark:text-slate-200">{{ row.sku }}</td>
-                      <td class="py-3 px-3 font-bold text-slate-800 dark:text-slate-200">{{ row.name }}</td>
-                      <td class="py-3 px-3 text-right font-black tabular-nums" [class]="row.lowStock ? 'text-amber-600 dark:text-amber-400' : 'text-slate-900 dark:text-slate-200'">
-                        {{ row.stock }} uds
-                      </td>
-                      <td class="py-3 px-3 text-right font-black text-slate-900 dark:text-slate-200 tabular-nums">{{ row.price }}</td>
-                      <td class="py-3 px-3 text-center">
-                        @if (row.lowStock) {
-                          <span class="inline-flex items-center rounded-full bg-amber-50 dark:bg-amber-950/50 px-2 py-0.5 text-[10px] font-black text-amber-700 dark:text-amber-300 ring-1 ring-amber-200 dark:ring-amber-800">
-                            Stock bajo
-                          </span>
-                        } @else {
-                          <span class="inline-flex items-center rounded-full bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 text-[10px] font-black text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-200 dark:ring-emerald-800">
-                            Disponible
-                          </span>
-                        }
-                      </td>
-                    </tr>
+                <!-- Líneas guía -->
+                <div class="absolute inset-x-4 sm:inset-x-6 top-6 bottom-14 flex flex-col justify-between pointer-events-none opacity-40 dark:opacity-30">
+                  @for (label of (chartMetric() === 'stock' ? ['350 uds','250 uds','150 uds','50 uds'] : ['$ 14.0M','$ 10.0M','$ 5.0M','$ 1.0M']); track label) {
+                    <div class="border-b border-dashed border-slate-400/40 dark:border-white/15 flex justify-end text-[9px] font-mono text-slate-500 dark:text-slate-400 pr-1 -mt-2">{{ label }}</div>
                   }
-                </tbody>
-              </table>
+                </div>
+
+                <!-- Columnas de barras animadas -->
+                <div class="relative z-10 grid grid-cols-4 gap-2 sm:gap-6 items-end h-52 sm:h-64 pt-6 pb-2">
+                  @for (item of sampleRows; track item.sku; let i = $index) {
+                    <div class="group relative flex flex-col items-center h-full justify-end cursor-pointer"
+                      (mouseenter)="hoveredBar.set(item.sku)" (mouseleave)="hoveredBar.set(null)">
+                      <!-- Valor flotante -->
+                      <div class="mb-2 flex flex-col items-center transition-all duration-300 group-hover:-translate-y-1">
+                        <span class="rounded-md px-1.5 py-0.5 text-[10px] sm:text-xs font-black tabular-nums shadow-sm transition-colors"
+                          [class]="item.lowStock ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30' : 'bg-slate-900/80 text-white dark:bg-white/15 dark:text-white dark:border dark:border-white/20'">
+                          {{ chartMetric() === 'stock' ? item.stock + ' uds' : item.totalValueFormatted }}
+                        </span>
+                      </div>
+                      <!-- Barra -->
+                      <div class="relative w-full max-w-[48px] sm:max-w-[76px] flex items-end justify-center h-full">
+                        <div class="w-full rounded-t-xl sm:rounded-t-2xl transition-all duration-700 ease-out relative overflow-hidden group-hover:brightness-110 group-hover:scale-x-105"
+                          [class]="getBarAnimationClass(i)"
+                          [style.background]="item.barGradient"
+                          [style.boxShadow]="item.barShadow"
+                          [style.height.%]="chartMetric() === 'stock' ? item.stockPct : item.valuePct">
+                          <!-- Brillo superior (cristal) -->
+                          <div class="absolute inset-x-0 top-0 h-1.5 sm:h-2 bg-white/40"></div>
+                        </div>
+                      </div>
+                      <!-- Etiquetas X -->
+                      <div class="mt-3 text-center w-full">
+                        <span class="inline-block rounded font-mono text-[9px] sm:text-[10px] font-black text-slate-600 dark:text-slate-300 px-1.5 py-0.5">{{ item.sku }}</span>
+                        <p class="mt-0.5 text-[11px] sm:text-xs font-black text-slate-950 dark:text-white truncate">{{ item.shortName }}</p>
+                        <p class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 tabular-nums">{{ item.price }}</p>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Tarjetas de desglose (4 columnas en desktop) -->
+              <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                @for (item of sampleRows; track item.sku) {
+                  <div class="rounded-xl sm:rounded-2xl border border-white/20 dark:border-white/[0.07] bg-transparent backdrop-blur-sm p-3.5 hover:border-white/40 dark:hover:border-white/15 hover:bg-white/10 dark:hover:bg-white/[0.04] transition group"
+                    [class.ring-2]="hoveredBar() === item.sku" [class.ring-blue-500]="hoveredBar() === item.sku"
+                    (mouseenter)="hoveredBar.set(item.sku)" (mouseleave)="hoveredBar.set(null)">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                          <span class="h-2 w-2 rounded-full shrink-0" [class]="item.dotClass"></span>
+                          <span class="font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400">{{ item.sku }}</span>
+                        </div>
+                        <p class="text-xs font-black text-slate-950 dark:text-white truncate mt-1">{{ item.name }}</p>
+                      </div>
+                      <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-black ring-1 shrink-0" [class]="item.badgeClass">{{ item.status }}</span>
+                    </div>
+                    <div class="mt-3">
+                      <div class="flex items-center justify-between text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1.5">
+                        <span>Existencias: <strong class="text-slate-950 dark:text-white">{{ item.stock }} uds</strong></span>
+                        <span class="font-mono text-slate-500 dark:text-slate-400">{{ item.price }}</span>
+                      </div>
+                      <div class="h-2 w-full rounded-full bg-white/20 dark:bg-white/10 overflow-hidden">
+                        <div class="h-full rounded-full transition-all duration-1000 ease-out" [class]="item.colorClass" [style.width.%]="item.stockPct"></div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 px-4 sm:px-5 py-3 text-xs text-slate-600 dark:text-slate-400">
-              <span>Mostrando catálogo activo de alta rotación</span>
-              <span class="font-black text-slate-900 dark:text-white">Total valorizado: $ 52.480.000 COP</span>
+            <!-- Pie del widget -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-t border-white/20 dark:border-white/[0.07] bg-transparent px-4 sm:px-6 py-3.5 text-xs text-slate-600 dark:text-slate-300">
+              <div class="flex items-center gap-2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4 text-emerald-600 dark:text-emerald-400">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+                </svg>
+                <span>Mostrando catálogo activo de alta rotación</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-slate-500 dark:text-slate-400 text-[11px]">Existencias totales: <strong class="text-slate-900 dark:text-white">589 uds</strong></span>
+                <span class="text-slate-300 dark:text-slate-600">|</span>
+                <span class="font-black text-slate-950 dark:text-white">Total valorizado: $ 52.480.000 COP</span>
+              </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -765,12 +825,63 @@ export class HomeComponent implements OnInit, OnDestroy {
     { label: 'Seguridad', value: 'Cifrado TLS 1.3', iconClass: 'text-sky-600' }
   ];
 
+  protected readonly chartMetric = signal<'stock' | 'value'>('stock');
+  protected readonly hoveredBar = signal<string | null>(null);
+
   protected readonly sampleRows = [
-    { sku: 'MAT-1042', name: 'Cemento Portland 50 kg', stock: 320, price: '$ 18.400', lowStock: false },
-    { sku: 'MAT-2087', name: 'Acero corrugado 12 mm', stock: 145, price: '$ 96.500', lowStock: false },
-    { sku: 'MAT-3315', name: 'Ladrillo cerámico hueco', stock: 28, price: '$ 3.250', lowStock: true },
-    { sku: 'MAT-4402', name: 'Adhesivo cerámico 25 kg', stock: 96, price: '$ 27.900', lowStock: false }
+    {
+      sku: 'MAT-1042', name: 'Cemento Portland 50 kg', shortName: 'Cemento Portland',
+      stock: 320, price: '$ 18.400', totalValueFormatted: '$ 5.88M',
+      stockPct: 91, valuePct: 42, lowStock: false, status: 'Disponible',
+      barGradient: 'linear-gradient(to top, #3b82f6, #60a5fa, #93c5fd)',
+      barShadow: '0 4px 12px rgba(59,130,246,0.30)',
+      dotClass: 'bg-blue-500',
+      colorClass: 'bg-blue-500',
+      badgeClass: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 ring-emerald-500/20',
+      progressGradient: 'linear-gradient(to right, #2563eb, #22d3ee)'
+    },
+    {
+      sku: 'MAT-2087', name: 'Acero corrugado 12 mm', shortName: 'Acero corrugado',
+      stock: 145, price: '$ 96.500', totalValueFormatted: '$ 13.9M',
+      stockPct: 41, valuePct: 100, lowStock: false, status: 'Disponible',
+      barGradient: 'linear-gradient(to top, #6366f1, #8b5cf6, #a78bfa)',
+      barShadow: '0 4px 12px rgba(99,102,241,0.30)',
+      dotClass: 'bg-indigo-500',
+      colorClass: 'bg-indigo-500',
+      badgeClass: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 ring-emerald-500/20',
+      progressGradient: 'linear-gradient(to right, #4f46e5, #818cf8)'
+    },
+    {
+      sku: 'MAT-3315', name: 'Ladrillo cerámico hueco', shortName: 'Ladrillo cerámico',
+      stock: 28, price: '$ 3.250', totalValueFormatted: '$ 91K',
+      stockPct: 10, valuePct: 4, lowStock: true, status: 'Stock bajo',
+      barGradient: 'linear-gradient(to top, #f59e0b, #f97316, #fbbf24)',
+      barShadow: '0 4px 12px rgba(245,158,11,0.30)',
+      dotClass: 'bg-amber-500',
+      colorClass: 'bg-amber-500',
+      badgeClass: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 ring-amber-500/20',
+      progressGradient: 'linear-gradient(to right, #f59e0b, #fb7185)'
+    },
+    {
+      sku: 'MAT-4402', name: 'Adhesivo cerámico 25 kg', shortName: 'Adhesivo cerámico',
+      stock: 96, price: '$ 27.900', totalValueFormatted: '$ 2.68M',
+      stockPct: 27, valuePct: 19, lowStock: false, status: 'Disponible',
+      barGradient: 'linear-gradient(to top, #0891b2, #06b6d4, #22d3ee)',
+      barShadow: '0 4px 12px rgba(6,182,212,0.30)',
+      dotClass: 'bg-sky-500',
+      colorClass: 'bg-sky-500',
+      badgeClass: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 ring-emerald-500/20',
+      progressGradient: 'linear-gradient(to right, #0284c7, #38bdf8)'
+    }
   ];
+
+  setChartMetric(metric: 'stock' | 'value'): void {
+    this.chartMetric.set(metric);
+  }
+
+  getBarAnimationClass(index: number): string {
+    return ['animate-bar-rise-1','animate-bar-rise-2','animate-bar-rise-3','animate-bar-rise-4'][index] ?? 'animate-bar-rise-1';
+  }
 
   protected readonly stats = [
     { value: '1.240', label: 'Productos en catálogo' },
