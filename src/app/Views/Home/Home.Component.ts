@@ -523,7 +523,7 @@ import { LogoComponent } from '../Layout/Shell.Component';
             <!-- Resplandor decorativo de fondo -->
             <div class="pointer-events-none absolute -inset-4 sm:-inset-6 rounded-full bg-gradient-to-tr from-blue-300/35 to-indigo-200/35 dark:from-blue-600/20 dark:to-indigo-600/20 blur-2xl sm:blur-3xl"></div>
 
-            <div class="relative z-10 w-full max-w-[300px] sm:max-w-[380px] lg:max-w-[460px]">
+            <div class="relative z-10 w-full max-w-[300px] sm:max-w-[380px] lg:max-w-[560px]">
               <img
                 src="img/Godman.png"
                 alt="Operación Ferretería Firmeza"
