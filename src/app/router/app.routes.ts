@@ -21,6 +21,7 @@ import { ShopComponent } from '../Views/Shop/Shop.Component';
 import { CheckoutComponent } from '../Views/Shop/Checkout.Component';
 import { ClientShellComponent } from '../Views/Shop/ClientShell.Component';
 import { MyOrdersComponent } from '../Views/Shop/MyOrders.Component';
+import { CustomerDashboardComponent } from '../Views/Shop/CustomerDashboard.Component';
 import { adminGuard, authGuard, customerGuard } from '../Guards/auth.guard';
 
 export const routes: Routes = [
@@ -67,6 +68,8 @@ export const routes: Routes = [
       { path: 'carrito', component: CheckoutComponent },
 
       // Rutas privadas: requieren sesión de cliente autenticado
+      { path: 'mi-dashboard', component: CustomerDashboardComponent, canActivate: [customerGuard] },
+      { path: 'mi-panel', component: CustomerDashboardComponent, canActivate: [customerGuard] },
       { path: 'mis-compras', component: MyOrdersComponent, canActivate: [customerGuard] },
       // El detalle lo comparte el panel y el portal: la API ya lo limita a las
       // ventas propias cuando quien llama es un Cliente.

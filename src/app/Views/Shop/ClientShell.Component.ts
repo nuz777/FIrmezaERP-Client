@@ -97,6 +97,17 @@ import { productDetailModalOpenSignal } from './ProductDetailDrawer.Component';
               </a>
               @if (authService.isAuthenticated()) {
                 <a
+                  routerLink="/mi-dashboard"
+                  routerLinkActive="bg-blue-50/90 text-blue-700 shadow-2xs font-black dark:bg-blue-950/60 dark:text-blue-300"
+                  class="flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4 text-amber-500">
+                    <circle cx="12" cy="12" r="9" />
+                    <circle cx="12" cy="12" r="4" />
+                  </svg>
+                  Mi Panel
+                </a>
+                <a
                   routerLink="/mis-compras"
                   routerLinkActive="bg-blue-50/90 text-blue-700 shadow-2xs font-black dark:bg-blue-950/60 dark:text-blue-300"
                   class="flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70"
@@ -203,6 +214,22 @@ import { productDetailModalOpenSignal } from './ProductDetailDrawer.Component';
                       </button>
 
                       <div class="my-1.5 h-px bg-slate-100 dark:bg-slate-800"></div>
+
+                      <!-- Enlace a Mi Dashboard de Métricas -->
+                      <a
+                        routerLink="/mi-dashboard"
+                        (click)="closeUserMenu()"
+                        class="flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white cursor-pointer"
+                      >
+                        <div class="flex items-center gap-2.5">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4 text-amber-500">
+                            <circle cx="12" cy="12" r="9" />
+                            <circle cx="12" cy="12" r="4" />
+                          </svg>
+                          <span>Métricas y Gráficos</span>
+                        </div>
+                        <span class="rounded bg-amber-100 dark:bg-amber-950/60 px-1.5 py-0.5 text-[9px] font-black uppercase text-amber-700 dark:text-amber-400">Dona</span>
+                      </a>
 
                       <!-- Botón Mi perfil & Seguridad -->
                       <button
@@ -371,6 +398,14 @@ export class ClientShellComponent {
           route: '/carrito',
           badge: this.cart.count(),
           badgeColor: 'bg-amber-500'
+        },
+        {
+          label: 'Mi Panel',
+          icon: [
+            'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z',
+            'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'
+          ],
+          route: '/mi-dashboard'
         },
         {
           label: 'Mis compras',

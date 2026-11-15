@@ -28,6 +28,17 @@ import { IconComponent } from '../Shared/Icon.Component';
         <p class="mt-2 text-slate-500">Sigue el estado de cada solicitud que enviaste.</p>
       </div>
       <div class="flex items-center gap-2">
+        <a
+          routerLink="/mi-dashboard"
+          class="inline-flex items-center gap-1.5 rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/60 px-4 py-2.5 text-xs font-bold text-amber-800 dark:text-amber-300 transition hover:bg-amber-100 dark:hover:bg-amber-900/60 shadow-2xs"
+          title="Ver gráfico interactivo de dona y métricas de inversión"
+        >
+          <svg class="h-4 w-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
+          <span>Métricas de Dona</span>
+        </a>
         @if (hasUnseenDecisions(sales())) {
           <button
             type="button"
