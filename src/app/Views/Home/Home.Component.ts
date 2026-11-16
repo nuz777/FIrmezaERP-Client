@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
 import { ThemeService } from '../../Services/theme.service';
 import { LogoComponent } from '../Layout/Shell.Component';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -670,10 +671,11 @@ import { LogoComponent } from '../Layout/Shell.Component';
         </div>
       </section>
 
-      <!-- SECCIÓN DE MÓDULOS -->
-      <section id="modulos" class="scroll-mt-20 sm:scroll-mt-28 py-12 sm:py-16 bg-slate-50/70 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div class="max-w-2xl">
+<!-- SECCIÓN DE MÓDULOS -->
+      <section id="modulos" class="py-12 sm:py-16 bg-slate-50 dark:bg-slate-950">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+          <!-- Texto -->
+          <div>
             <p class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-blue-600 dark:text-blue-400">
               <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" class="h-4 w-4">
                 <path d="M12 2 2 7l10 5 10-5-10-5Z" />
@@ -688,25 +690,55 @@ import { LogoComponent } from '../Layout/Shell.Component';
             <p class="mt-2 sm:mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
               Cada módulo comparte las mismas reglas de validación en el dominio, eliminando inconsistencias y duplicación entre áreas.
             </p>
+            <p class="mt-3 text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+              Conoce cómo Firmeza centraliza el catálogo de materiales, la gestión de clientes y el registro de ventas con trazabilidad completa y control de existencias.
+            </p>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <a routerLink="/tienda"
+                 class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-500/25 transition hover:bg-blue-500 active:scale-95">
+                Ver catálogo
+              </a>
+              <a routerLink="/register"
+                 class="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-3 text-sm font-bold text-slate-700 dark:text-slate-200 transition hover:border-blue-400 hover:text-blue-600 active:scale-95">
+                Crear cuenta
+              </a>
+            </div>
           </div>
 
-          <div class="mt-8 sm:mt-12 grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            @for (module of modules; track module.title) {
-              <article class="group relative flex flex-col justify-between rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs transition hover:-translate-y-1 hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-xl">
-                <div>
-                  <span class="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl shadow-2xs transition group-hover:scale-110" [class]="module.iconClass">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" class="h-5 w-5 sm:h-6 sm:w-6">
-                      <path [attr.d]="module.icon" />
+          <!-- Video -->
+          <div class="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-900 shadow-2xl shadow-blue-950/10 dark:shadow-black/60 aspect-video">
+            @if (videoPlaying()) {
+              <iframe
+                class="absolute inset-0 h-full w-full"
+                [src]="videoUrl"
+                title="Firmeza – Gestión Integral"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                allowfullscreen
+                referrerpolicy="strict-origin-when-cross-origin"
+              ></iframe>
+            } @else {
+              <button
+                type="button"
+                (click)="playVideo()"
+                class="group absolute inset-0 h-full w-full cursor-pointer focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/60"
+                aria-label="Reproducir video: Firmeza – Gestión Integral">
+                <img [src]="videoThumb" alt="Vista previa del video de Firmeza"
+                 loading="lazy"
+                 class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <span class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/10 to-transparent"></span>
+                <!-- Botón play -->
+                <span class="absolute inset-0 grid place-items-center">
+                  <span class="grid h-16 w-16 sm:h-20 sm:w-20 place-items-center rounded-full bg-blue-600 text-white shadow-xl shadow-blue-600/40 ring-8 ring-white/20 transition group-hover:scale-110 group-hover:bg-blue-500">
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="ml-1 h-7 w-7 sm:h-8 sm:w-8">
+                      <path d="M8 5v14l11-7z" />
                     </svg>
                   </span>
-                  <h3 class="mt-4 sm:mt-5 text-sm sm:text-base font-black text-slate-950 dark:text-white">{{ module.title }}</h3>
-                  <p class="mt-1.5 sm:mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400">{{ module.description }}</p>
-                </div>
-                <div class="mt-5 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-black text-blue-600 dark:text-blue-400">
-                  <span>Módulo activo</span>
-                  <span class="transition group-hover:translate-x-1">→</span>
-                </div>
-              </article>
+                </span>
+
+                <span class="absolute bottom-3 left-4 right-4 text-left text-xs sm:text-sm font-black text-white drop-shadow">
+                  Firmeza – Gestión Integral
+                </span>
+              </button>
             }
           </div>
         </div>
@@ -806,6 +838,7 @@ import { LogoComponent } from '../Layout/Shell.Component';
 export class HomeComponent implements OnInit, OnDestroy {
   protected readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  protected readonly sanitizer = inject(DomSanitizer);
   protected readonly theme = inject(ThemeService);
   protected readonly currentUser = this.authService.currentUser;
 
@@ -813,6 +846,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   protected readonly isScrolled = signal(false);
   protected readonly activeSection = signal<string>('');
   protected readonly mobileMenuOpen = signal(false);
+
+  // --- Configuración del video de presentación ---
+  protected readonly videoId = 'fT71O0mWEIs';
+  protected readonly videoPlaying = signal(false);
+  protected readonly videoThumb = `https://i.ytimg.com/vi/${this.videoId}/hqdefault.jpg`;
+  protected readonly videoUrl: SafeResourceUrl =
+    this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.youtube-nocookie.com/embed/${this.videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`
+    );
+
+  protected readonly videoPlayingToggle = () => this.videoPlaying.update(v => !v);
 
   private lastScrollY = 0;
   private scrollCleanUp?: () => void;
@@ -961,7 +1005,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.authService.logout(false);
   }
 
-  ngOnInit(): void {
+  playVideo(): void {
+  this.videoPlaying.set(true);
+}
+
+ngOnInit(): void {
     if (this.authService.isAuthenticated() && this.authService.isAdministrator()) {
       this.router.navigate(['/dashboard']);
       return;
