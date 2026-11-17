@@ -493,21 +493,6 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
                 class="animate-slide-in-left block h-auto w-full object-contain drop-shadow-2xl transition duration-500 hover:scale-102"
               />
 
-              <!-- Tarjeta flotante 1: Catálogo y materiales (Posicionada sin desbordar el ancho de pantalla) -->
-              <div class="animate-float-card-1 absolute bottom-1 left-1 sm:-bottom-4 sm:-left-6 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 p-2.5 sm:p-3.5 shadow-lg sm:shadow-xl shadow-slate-300/40 dark:shadow-black/50 backdrop-blur-md max-w-[80%] sm:max-w-none">
-                <div class="flex items-center gap-2 sm:gap-3">
-                  <div class="grid h-8 w-8 sm:h-10 sm:w-10 place-items-center rounded-lg sm:rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 shrink-0">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4 sm:h-5 sm:w-5">
-                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                    </svg>
-                  </div>
-                  <div class="min-w-0">
-                    <p class="text-[11px] sm:text-xs font-black text-slate-900 dark:text-white truncate">Inventario al instante</p>
-                    <p class="text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">+1.240 productos</p>
-                  </div>
-                </div>
-              </div>
-
               <!-- Tarjeta flotante 2: Estado de pedidos (Sin desbordar el margen derecho) -->
               <div class="animate-float-card-2 absolute top-2 right-1 sm:top-8 sm:-right-4 rounded-xl sm:rounded-2xl border border-emerald-200/90 dark:border-emerald-800/80 bg-white/95 dark:bg-slate-900/95 p-2 sm:p-3 shadow-lg sm:shadow-xl shadow-slate-300/40 dark:shadow-black/50 backdrop-blur-md max-w-[80%] sm:max-w-none">
                 <div class="flex items-center gap-2 sm:gap-2.5">
