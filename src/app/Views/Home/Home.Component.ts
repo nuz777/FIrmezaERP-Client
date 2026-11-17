@@ -486,11 +486,11 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
           <!-- Columna de ilustración y tarjetas flotantes (Sin desborde lateral en celular) -->
           <div class="relative lg:col-span-6 flex justify-center mt-5 lg:mt-0">
-            <div class="relative z-10 w-full max-w-[300px] sm:max-w-[380px] lg:max-w-[560px] translate-y-6 sm:translate-y-8 lg:translate-y-14">
+            <div class="relative z-10 w-full max-w-[700px] sm:max-w-[900px] lg:max-w-[1200px] translate-y-12 sm:translate-y-16 lg:translate-y-24">
               <img
                 src="img/Godman.png"
                 alt="Operación Ferretería Firmeza"
-                class="animate-slide-in-left block h-auto w-full object-contain drop-shadow-xl sm:drop-shadow-2xl transition duration-500 hover:scale-102"
+                class="animate-slide-in-left block h-auto w-full object-contain drop-shadow-2xl transition duration-500 hover:scale-102"
               />
 
               <!-- Tarjeta flotante 1: Catálogo y materiales (Posicionada sin desbordar el ancho de pantalla) -->
@@ -527,7 +527,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
         </div>
 
         <!-- Widget interactivo: Gráfica de barras de operaciones de inventario -->
-        <div class="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 mt-10 sm:mt-16 lg:mt-24 pb-16 sm:pb-24">
+        <div class="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 mt-4 sm:mt-6 lg:mt-8 pb-16 sm:pb-24">
           <div class="overflow-hidden rounded-2xl sm:rounded-3xl border border-white/20 dark:border-white/[0.07] bg-transparent shadow-2xl shadow-blue-950/10 dark:shadow-black/70 backdrop-blur-2xl sm:backdrop-blur-3xl">
 
             <!-- Barra superior del widget -->
